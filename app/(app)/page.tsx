@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Stat from "@/components/Stat";
+import DemandaChart from "@/components/DemandaChart";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { gerarAlertas, type Severidade } from "@/lib/pcp/alertas";
@@ -61,11 +62,21 @@ const sevEstilo: Record<Severidade, { pill: string; rotulo: string }> = {
 export default async function Inicio() {
   const cfg = await lerConfig();
   const r = rodarEngine(cfg);
-  const { alertas, porSeveridade } = gerarAlertas(cfg, r);
+  const { alertas } = gerarAlertas(cfg, r);
 
   const bal = r.balanceamento.proposta5;
   const metodo = r.previsao.metodos.find((m) => m.escolhido)!;
   const ultimoMes = r.verificacao[r.verificacao.length - 1];
+
+  const reais = [...cfg.demanda]
+    .sort((a, b) => a.mes - b.mes)
+    .map((d) => ({ mes: d.mes, valor: d.vendas }));
+  const previstos = [
+    { mes: 13, valor: metodo.prev13 },
+    { mes: 14, valor: metodo.prev14 },
+    { mes: 15, valor: metodo.prev15 },
+  ];
+  const topAlertas = alertas.slice(0, 4);
 
   return (
     <div>
@@ -99,11 +110,9 @@ export default async function Inicio() {
           <h2 className="text-lg font-bold text-slate-800">
             ⚡ Ações recomendadas hoje
           </h2>
-          <div className="flex gap-2 text-xs">
-            <span className="badge pill-a">{porSeveridade.alta} alta</span>
-            <span className="badge pill-b">{porSeveridade.media} média</span>
-            <span className="badge pill-c">{porSeveridade.baixa} baixa</span>
-          </div>
+          <Link href="/acoes" className="text-sm font-semibold text-brand hover:underline">
+            Ver todas ({alertas.length}) →
+          </Link>
         </div>
 
         {alertas.length === 0 ? (
@@ -112,10 +121,10 @@ export default async function Inicio() {
           </div>
         ) : (
           <div className="space-y-2">
-            {alertas.map((a) => (
+            {topAlertas.map((a) => (
               <Link
                 key={a.id}
-                href={a.modulo}
+                href="/acoes"
                 className="card flex items-start gap-4 transition hover:border-brand"
               >
                 <span className={`badge ${sevEstilo[a.severidade].pill} mt-0.5 shrink-0`}>
@@ -131,8 +140,28 @@ export default async function Inicio() {
                 <span className="shrink-0 self-center text-slate-300">›</span>
               </Link>
             ))}
+            {alertas.length > topAlertas.length && (
+              <Link href="/acoes" className="block py-2 text-center text-sm font-medium text-brand hover:underline">
+                + {alertas.length - topAlertas.length} outras ações na aba “Ações agora”
+              </Link>
+            )}
           </div>
         )}
+      </section>
+
+      {/* Tendência de demanda */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-lg font-bold text-slate-800">
+          📈 Tendência de demanda
+        </h2>
+        <div className="card">
+          <DemandaChart reais={reais} previstos={previstos} />
+          <p className="mt-2 text-xs text-slate-500">
+            Linha cheia = vendas reais (12 meses); tracejado = previsão escolhida
+            ({metodo.rotulo}). A série cresce — por isso a regressão linear é a
+            mais indicada.
+          </p>
+        </div>
       </section>
 
       {/* Saúde do sistema */}

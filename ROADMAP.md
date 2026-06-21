@@ -29,9 +29,11 @@ gestão contínua, online e orientada a resultados.
 
 ## 🗺️ Roadmap por ondas
 
-### Onda 1 — Decisão e onboarding ✅ (feito)
-- [x] Tela Início com **ações recomendadas**
-- [x] Guia "Como usar" + HOW-TO-USE
+### Onda 1 — Decisão e didática ✅ (feito)
+- [x] Tela Início com **ações recomendadas** + gráfico de demanda × previsão
+- [x] **Aba "Ações agora"** — central de decisão do cliente (por quê / se ignorar / o que fazer)
+- [x] **Explicadores** em cada módulo (linguagem de cliente, recolhíveis)
+- [x] Guia "Como usar" + **glossário** + HOW-TO-USE
 - [x] Indicadores de saúde
 
 ### Onda 2 — Resultados ao longo do tempo (próxima)

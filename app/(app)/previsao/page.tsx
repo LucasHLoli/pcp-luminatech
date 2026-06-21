@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import PrevisaoEditor from "@/components/PrevisaoEditor";
+import Explicador from "@/components/Explicador";
 import { lerConfig } from "@/lib/db/repo";
 import { calcularPrevisao } from "@/lib/pcp/forecast";
 import { fmtDec1, fmtInt, fmtPct } from "@/lib/format";
@@ -21,6 +22,18 @@ export default async function PrevisaoPage() {
         titulo="Previsão de demanda"
         descricao="Quatro métodos comparados por MAD e MAPE (janela meses 4–12). O sistema escolhe o de menor erro."
       />
+
+      <Explicador>
+        <p>
+          Previsão é <strong>estimar quanto você vai vender</strong> nos próximos
+          meses a partir do histórico. O sistema testa 4 métodos e escolhe o que
+          erra menos (menor <strong>MAPE</strong> = erro percentual médio).
+        </p>
+        <p>
+          👉 Quanto melhor a previsão, mais certeiro fica todo o resto (plano,
+          compras, estoque). Atualize com as vendas reais a cada mês.
+        </p>
+      </Explicador>
 
       <PrevisaoEditor
         demandaInicial={cfg.demanda}

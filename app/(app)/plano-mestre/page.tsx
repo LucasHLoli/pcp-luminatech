@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import PlanoMestreEditor from "@/components/PlanoMestreEditor";
+import Explicador from "@/components/Explicador";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { fmtInt, fmtPct } from "@/lib/format";
@@ -17,6 +18,19 @@ export default async function PlanoMestrePage() {
         titulo="Plano Mestre de Produção"
         descricao="Converte demanda e estoques em produção planejada por mês e confronta com a capacidade da linha."
       />
+
+      <Explicador>
+        <p>
+          O Plano Mestre responde: <strong>quanto produzir em cada mês?</strong>{" "}
+          A conta é simples — produzir o que a demanda pede, mais o estoque que
+          você quer deixar no fim, menos o que já tem hoje.
+        </p>
+        <p>
+          👉 Logo abaixo, confira a <strong>utilização da capacidade</strong>:
+          se passar de 85%, a linha está apertada; se passar de 100%, o plano não
+          cabe num turno.
+        </p>
+      </Explicador>
 
       <PlanoMestreEditor inicial={cfg.planoMestre} />
 

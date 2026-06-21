@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import Explicador from "@/components/Explicador";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { fmtInt } from "@/lib/format";
@@ -28,6 +29,20 @@ export default async function MrpPage() {
         titulo="MRP — Necessidades de Materiais"
         descricao="Explode a BOM sobre o Plano Mestre, desconta estoques e desloca pelo lead time. Lote a lote."
       />
+
+      <Explicador>
+        <p>
+          MRP (Planejamento de Necessidades de Materiais) responde:{" "}
+          <strong>o que comprar, quanto e quando?</strong> Ele pega o plano de
+          produção, multiplica pela receita do produto, desconta o que já há em
+          estoque e <strong>recua pelo lead time</strong> de cada item.
+        </p>
+        <p>
+          👉 A "necessidade líquida" é o que falta comprar. A "liberação" é a{" "}
+          <strong>data em que o pedido precisa sair</strong>. Itens de 2 meses
+          (driver e placa LED) exigem pedido bem antes — fique de olho.
+        </p>
+      </Explicador>
 
       <div className="card overflow-x-auto">
         <div className="card-title mb-3">Necessidades líquidas por componente</div>

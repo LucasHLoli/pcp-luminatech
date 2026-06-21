@@ -14,6 +14,8 @@ export interface Alerta {
   severidade: Severidade;
   titulo: string;
   detalhe: string;
+  porque: string; // por que isto importa (linguagem de cliente)
+  impacto: string; // o que acontece se ignorar
   acao: string; // o que fazer
   modulo: string; // rota relacionada
 }
@@ -45,7 +47,13 @@ export function gerarAlertas(
         severidade: sev,
         titulo: `Repor ${c.nome} (${c.codigo})`,
         detalhe: `Estoque atual ${fmt(c.estoqueInicial)} un. ≤ ponto de pedido ${fmt(pol.pontoPedido)} un. (classe ${pol.classe}).`,
-        acao: `Emitir pedido de ~${fmt(pol.lec)} un. (lote econômico).`,
+        porque:
+          "O ponto de pedido é o nível em que se deve comprar para o estoque não zerar antes de a nova remessa chegar.",
+        impacto:
+          pol.classe === "A"
+            ? "Item caro e crítico: se faltar, a linha para e o capital fica parado. Prioridade máxima."
+            : "Risco de faltar peça e atrasar a montagem do mês.",
+        acao: `Emitir pedido de ~${fmt(pol.lec)} un. (lote econômico de compra).`,
         modulo: "/estoques",
       });
     }
@@ -65,6 +73,10 @@ export function gerarAlertas(
       severidade: sev,
       titulo: `Pedido fora do horizonte: ${comp.nome} (${comp.codigo})`,
       detalhe: `Lead time ${comp.leadTime} ${comp.leadTime === 1 ? "mês" : "meses"}: o recebimento exige liberação já no mês ${maisCedo.mes}, antes do início do plano (mês ${primeiroMes}).`,
+      porque:
+        `Este componente demora ${comp.leadTime} ${comp.leadTime === 1 ? "mês" : "meses"} para chegar. Para tê-lo no mês certo, o pedido tem de sair antes — e essa data já passou do início do plano.`,
+      impacto:
+        "Se o pedido não sair agora, o componente não chega a tempo e a produção do primeiro mês simplesmente não acontece.",
       acao: `Colocar o pedido IMEDIATAMENTE (${fmt(maisCedo.quantidade)} un.).`,
       modulo: "/mrp",
     });
@@ -79,6 +91,10 @@ export function gerarAlertas(
         severidade: "alta",
         titulo: `Capacidade estourada no mês ${v.mes}`,
         detalhe: `Produção ${fmt(v.producaoPlanejada)} un. > capacidade ${fmt(v.capacidade)} un. (${v.utilizacao.toLocaleString("pt-BR")}%).`,
+        porque:
+          "O plano pede mais do que a linha consegue produzir num turno.",
+        impacto:
+          "Pedidos atrasam, o plano não é cumprido e o cliente final fica sem produto.",
         acao: "Abrir estação paralela no gargalo, turno extra ou rever o plano.",
         modulo: "/balanceamento",
       });
@@ -89,6 +105,10 @@ export function gerarAlertas(
         severidade: "media",
         titulo: `Capacidade apertada no mês ${v.mes}`,
         detalhe: `Utilização de ${v.utilizacao.toLocaleString("pt-BR")}% — pouca folga para picos ou sazonalidade.`,
+        porque:
+          "Acima de 85% de uso, qualquer imprevisto (falta, pico de demanda) já vira atraso.",
+        impacto:
+          "Sem folga, um mês mais forte que o previsto não é atendido.",
         acao: "Monitorar o gargalo (E2) e preparar plano de expansão.",
         modulo: "/balanceamento",
       });

@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import BalanceamentoExplorer from "@/components/BalanceamentoExplorer";
+import Explicador from "@/components/Explicador";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { fmtDec1, fmtInt, fmtPct } from "@/lib/format";
@@ -19,6 +20,19 @@ export default async function BalanceamentoPage() {
         titulo="Balanceamento de linha"
         descricao="Distribui as 12 tarefas (cadeia A→L) em estações respeitando precedência e tempo de ciclo."
       />
+
+      <Explicador>
+        <p>
+          Balancear é <strong>dividir o trabalho entre postos</strong> para a
+          linha fluir sem acúmulos. O <strong>gargalo</strong> é o posto mais
+          lento — ele dita o ritmo de toda a linha.
+        </p>
+        <p>
+          👉 Use o controle deslizante para simular: menos tempo de ciclo = mais
+          estações, mais capacidade. <strong>Eficiência</strong> alta significa
+          pouca ociosidade.
+        </p>
+      </Explicador>
 
       <BalanceamentoExplorer
         tarefas={cfg.tarefas}

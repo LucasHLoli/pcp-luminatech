@@ -162,6 +162,29 @@ export default function ComoUsar() {
             </li>
           </ul>
         </Secao>
+        <Secao titulo="Glossário (termos sem mistério)" n="⑦">
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr><th>Termo</th><th>O que é, em palavras simples</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>BOM / Lista de materiais</strong></td><td>A "receita" do produto: quais peças e quantas entram em cada unidade.</td></tr>
+                <tr><td><strong>Lead time</strong></td><td>Tempo entre pedir e receber um componente.</td></tr>
+                <tr><td><strong>Previsão</strong></td><td>Estimativa de quanto será vendido nos próximos meses.</td></tr>
+                <tr><td><strong>MAPE</strong></td><td>Erro médio da previsão, em %. Menor é melhor.</td></tr>
+                <tr><td><strong>Plano Mestre (PMP)</strong></td><td>Quanto produzir em cada mês.</td></tr>
+                <tr><td><strong>MRP</strong></td><td>Cálculo do que comprar, quanto e quando, item a item.</td></tr>
+                <tr><td><strong>LEC</strong></td><td>Lote econômico: quantidade ideal por pedido para gastar menos.</td></tr>
+                <tr><td><strong>Estoque de segurança</strong></td><td>Colchão extra para não faltar peça em imprevistos.</td></tr>
+                <tr><td><strong>Ponto de pedido</strong></td><td>Nível de estoque em que se deve comprar de novo.</td></tr>
+                <tr><td><strong>Curva ABC</strong></td><td>Classifica itens por valor: poucos A (caros) × muitos C (baratos).</td></tr>
+                <tr><td><strong>Gargalo</strong></td><td>O posto mais lento da linha — limita a produção de todos.</td></tr>
+                <tr><td><strong>Takt / tempo de ciclo</strong></td><td>Ritmo necessário para atender a demanda no prazo.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </Secao>
       </div>
 
       <div className="mt-6 flex gap-3">

@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import EstoquesParams from "@/components/EstoquesParams";
+import Explicador from "@/components/Explicador";
 import { lerConfig } from "@/lib/db/repo";
 import { calcularEstoques, politicaRecomendada } from "@/lib/pcp/inventory";
 import { fmtBRL, fmtInt, fmtPct } from "@/lib/format";
@@ -19,6 +20,17 @@ export default async function EstoquesPage() {
         titulo="Gestão de estoques"
         descricao="Lote econômico (LEC), estoque de segurança, ponto de pedido e classificação ABC por valor anual."
       />
+
+      <Explicador>
+        <p>Para cada peça, o sistema define a política de estoque:</p>
+        <ul className="ml-4 list-disc">
+          <li><strong>LEC</strong> — quanto comprar por pedido para gastar menos no total.</li>
+          <li><strong>Estoque de segurança</strong> — colchão contra imprevistos.</li>
+          <li><strong>Ponto de pedido</strong> — o nível em que se deve comprar de novo.</li>
+          <li><strong>Curva ABC</strong> — separa os poucos itens que valem muito (A) dos muitos que valem pouco (C).</li>
+        </ul>
+        <p>👉 Concentre o controle nos itens <strong>classe A</strong> — eles respondem pela maior parte do dinheiro e do risco.</p>
+      </Explicador>
 
       <EstoquesParams parametros={cfg.parametros} />
 
