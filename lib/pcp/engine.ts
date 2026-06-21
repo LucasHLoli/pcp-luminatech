@@ -8,6 +8,7 @@ import { balancear } from "./balancing";
 import { calcularPMP, verificarCapacidade } from "./mps";
 import { calcularMRP } from "./mrp";
 import { calcularEstoques } from "./inventory";
+import { calcularAderencia } from "./aderencia";
 
 export function rodarEngine(cfg: ConfiguracaoPCP) {
   const previsao = calcularPrevisao(cfg.demanda, {
@@ -33,6 +34,7 @@ export function rodarEngine(cfg: ConfiguracaoPCP) {
 
   const mrp = calcularMRP(cfg.componentes, pmp);
   const estoques = calcularEstoques(cfg.componentes, cfg.parametros);
+  const aderencia = calcularAderencia(pmp, cfg.execucao ?? []);
 
   return {
     previsao,
@@ -42,6 +44,7 @@ export function rodarEngine(cfg: ConfiguracaoPCP) {
     verificacao,
     mrp,
     estoques,
+    aderencia,
   };
 }
 

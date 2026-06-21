@@ -5,6 +5,7 @@ import { getClient } from "./client";
 import type {
   Componente,
   DemandaMes,
+  ExecucaoMes,
   ParametrosGerais,
   PlanoMestreMes,
   Produto,
@@ -14,6 +15,7 @@ import {
   CENARIOS,
   COMPONENTES,
   DEMANDA,
+  EXECUCAO,
   PARAMETROS,
   PLANO_MESTRE,
   PRODUTO,
@@ -28,6 +30,7 @@ export interface ConfiguracaoPCP {
   planoMestre: PlanoMestreMes[];
   parametros: ParametrosGerais;
   cenarios: { cenario: string; demanda: number }[];
+  execucao: ExecucaoMes[];
 }
 
 const PADRAO: ConfiguracaoPCP = {
@@ -38,6 +41,7 @@ const PADRAO: ConfiguracaoPCP = {
   planoMestre: PLANO_MESTRE,
   parametros: PARAMETROS,
   cenarios: CENARIOS,
+  execucao: EXECUCAO,
 };
 
 let inicializado = false;

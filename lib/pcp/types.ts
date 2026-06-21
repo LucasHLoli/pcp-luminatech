@@ -49,3 +49,10 @@ export interface PlanoMestreMes {
   estoqueInicial: number;
   estoqueFinalDesejado: number;
 }
+
+// Execução real (o que de fato aconteceu) — base da aderência ao plano.
+export interface ExecucaoMes {
+  mes: number;
+  produzidoReal: number; // unidades efetivamente produzidas
+  vendidoReal: number; // unidades efetivamente vendidas
+}

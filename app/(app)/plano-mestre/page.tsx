@@ -1,6 +1,7 @@
 import PageHeader from "@/components/PageHeader";
 import PlanoMestreEditor from "@/components/PlanoMestreEditor";
 import Explicador from "@/components/Explicador";
+import ExportButtons from "@/components/ExportButtons";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { fmtInt, fmtPct } from "@/lib/format";
@@ -11,13 +12,26 @@ export default async function PlanoMestrePage() {
   const cfg = await lerConfig();
   const r = rodarEngine(cfg);
 
+  const csv = r.pmp.map((l, i) => ({
+    mes: l.mes,
+    demanda: l.demanda,
+    estoque_inicial: l.estoqueInicial,
+    estoque_final_desejado: l.estoqueFinalDesejado,
+    producao_planejada: l.producaoPlanejada,
+    capacidade: r.verificacao[i].capacidade,
+    utilizacao_pct: r.verificacao[i].utilizacao,
+  }));
+
   return (
     <div>
-      <PageHeader
-        secao="Módulo 3"
-        titulo="Plano Mestre de Produção"
-        descricao="Converte demanda e estoques em produção planejada por mês e confronta com a capacidade da linha."
-      />
+      <div className="flex items-start justify-between">
+        <PageHeader
+          secao="Módulo 3"
+          titulo="Plano Mestre de Produção"
+          descricao="Converte demanda e estoques em produção planejada por mês e confronta com a capacidade da linha."
+        />
+        <ExportButtons csvData={csv} csvNome="plano-mestre" />
+      </div>
 
       <Explicador>
         <p>

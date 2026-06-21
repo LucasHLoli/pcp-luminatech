@@ -196,6 +196,29 @@ export default async function Inicio() {
         </div>
       </section>
 
+      {/* Resultado vs plano */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-lg font-bold text-slate-800">
+          🎯 Resultado vs plano
+        </h2>
+        <Link href="/execucao" className="card flex flex-wrap items-center justify-between gap-4 transition hover:border-brand">
+          <div>
+            <div className="text-sm text-slate-500">Aderência média da produção</div>
+            <div className="text-3xl font-bold text-slate-800">
+              {r.aderencia.mediaAderenciaProducao != null
+                ? fmtPct(r.aderencia.mediaAderenciaProducao)
+                : "—"}
+            </div>
+            <div className="text-xs text-slate-400">
+              {r.aderencia.mesesExecutados} de {r.aderencia.linhas.length} meses lançados
+            </div>
+          </div>
+          <span className="text-sm font-semibold text-brand">
+            Lançar execução e ver aderência →
+          </span>
+        </Link>
+      </section>
+
       {/* Como usar em 6 passos */}
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-bold text-slate-800">

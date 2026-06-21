@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import Explicador from "@/components/Explicador";
+import ExportButtons from "@/components/ExportButtons";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
 import { fmtInt } from "@/lib/format";
@@ -22,13 +23,29 @@ export default async function MrpPage() {
       ).sort((a, b) => a - b)
     : [];
 
+  const csv: Record<string, string | number>[] = r.mrp.map((c) => {
+    const linha: Record<string, string | number> = {
+      codigo: c.codigo,
+      item: c.nome,
+      lead_time: c.leadTime,
+      estoque_inicial: c.estoqueInicial,
+    };
+    c.linhas.forEach((l) => {
+      linha[`NL_mes_${l.mes}`] = l.necessidadeLiquida;
+    });
+    return linha;
+  });
+
   return (
     <div>
-      <PageHeader
-        secao="Módulo 4"
-        titulo="MRP — Necessidades de Materiais"
-        descricao="Explode a BOM sobre o Plano Mestre, desconta estoques e desloca pelo lead time. Lote a lote."
-      />
+      <div className="flex items-start justify-between">
+        <PageHeader
+          secao="Módulo 4"
+          titulo="MRP — Necessidades de Materiais"
+          descricao="Explode a BOM sobre o Plano Mestre, desconta estoques e desloca pelo lead time. Lote a lote."
+        />
+        <ExportButtons csvData={csv} csvNome="mrp-necessidades" />
+      </div>
 
       <Explicador>
         <p>

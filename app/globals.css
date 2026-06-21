@@ -45,3 +45,22 @@ body {
   .pill-b { @apply bg-amber-100 text-amber-700; }
   .pill-c { @apply bg-emerald-100 text-emerald-700; }
 }
+
+/* Impressão / exportar PDF: esconde navegação e deixa o conteúdo limpo. */
+@media print {
+  aside,
+  .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .card {
+    border-color: #cbd5e1;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  main {
+    overflow: visible !important;
+  }
+}

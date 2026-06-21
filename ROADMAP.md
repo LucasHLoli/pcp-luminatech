@@ -36,11 +36,14 @@ gestão contínua, online e orientada a resultados.
 - [x] Guia "Como usar" + **glossário** + HOW-TO-USE
 - [x] Indicadores de saúde
 
-### Onda 2 — Resultados ao longo do tempo (próxima)
-- [ ] **Registro de execução**: lançar produção/vendas reais por mês
-- [ ] **Aderência ao plano** (planejado × realizado) e **índice de ruptura**
-- [ ] **Gráficos**: demanda × previsão, curva ABC, utilização por mês
-- [ ] **Realimentar a previsão** com as vendas reais automaticamente
+### Onda 2 — Resultados ao longo do tempo ✅ (feito)
+- [x] **Registro de execução**: lançar produção/vendas reais por mês (aba Execução)
+- [x] **Aderência ao plano** (planejado × realizado) + KPI no Início
+- [x] **Gráfico** demanda × previsão no Início
+- [x] **Exportação** CSV (Excel) e PDF (impressão) nos módulos de dados
+- [x] **Menu responsivo** (celular) + favicon e título da aba
+- [ ] Realimentar a previsão com as vendas reais automaticamente
+- [ ] Gráficos adicionais (curva ABC, utilização por mês), índice de ruptura
 
 ### Onda 3 — Escala de negócio
 - [ ] **Múltiplos produtos/SKUs** (BOM por produto)

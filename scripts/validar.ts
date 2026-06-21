@@ -1,12 +1,13 @@
 // Validação: roda o engine sobre os dados-semente e confere com o relatório.
 import {
-  CENARIOS, COMPONENTES, DEMANDA, PARAMETROS, PLANO_MESTRE, PRODUTO, TAREFAS,
+  CENARIOS, COMPONENTES, DEMANDA, EXECUCAO, PARAMETROS, PLANO_MESTRE, PRODUTO, TAREFAS,
 } from "../lib/db/seed-data";
 import { rodarEngine } from "../lib/pcp/engine";
 
 const cfg = {
   produto: PRODUTO, componentes: COMPONENTES, tarefas: TAREFAS,
-  demanda: DEMANDA, planoMestre: PLANO_MESTRE, parametros: PARAMETROS, cenarios: CENARIOS,
+  demanda: DEMANDA, planoMestre: PLANO_MESTRE, parametros: PARAMETROS,
+  cenarios: CENARIOS, execucao: EXECUCAO,
 };
 const r = rodarEngine(cfg);
 

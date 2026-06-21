@@ -1,6 +1,7 @@
 import PageHeader from "@/components/PageHeader";
 import EstoquesParams from "@/components/EstoquesParams";
 import Explicador from "@/components/Explicador";
+import ExportButtons from "@/components/ExportButtons";
 import { lerConfig } from "@/lib/db/repo";
 import { calcularEstoques, politicaRecomendada } from "@/lib/pcp/inventory";
 import { fmtBRL, fmtInt, fmtPct } from "@/lib/format";
@@ -13,13 +14,27 @@ export default async function EstoquesPage() {
   const cfg = await lerConfig();
   const r = calcularEstoques(cfg.componentes, cfg.parametros);
 
+  const csv = r.itens.map((i) => ({
+    codigo: i.codigo,
+    item: i.nome,
+    classe: i.classe,
+    lec: i.lec,
+    estoque_seguranca: i.estoqueSeguranca,
+    ponto_pedido: i.pontoPedido,
+    valor_anual: i.valorAnual,
+    participacao_pct: i.participacao,
+  }));
+
   return (
     <div>
-      <PageHeader
-        secao="Módulo 5"
-        titulo="Gestão de estoques"
-        descricao="Lote econômico (LEC), estoque de segurança, ponto de pedido e classificação ABC por valor anual."
-      />
+      <div className="flex items-start justify-between">
+        <PageHeader
+          secao="Módulo 5"
+          titulo="Gestão de estoques"
+          descricao="Lote econômico (LEC), estoque de segurança, ponto de pedido e classificação ABC por valor anual."
+        />
+        <ExportButtons csvData={csv} csvNome="estoques-politicas" />
+      </div>
 
       <Explicador>
         <p>Para cada peça, o sistema define a política de estoque:</p>

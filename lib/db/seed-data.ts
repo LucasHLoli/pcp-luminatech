@@ -5,6 +5,7 @@
 import type {
   Componente,
   DemandaMes,
+  ExecucaoMes,
   ParametrosGerais,
   PlanoMestreMes,
   Produto,
@@ -81,6 +82,14 @@ export const PARAMETROS: ParametrosGerais = {
   percentualH: 0.2,
   demandaMensalBase: 1300,
 };
+
+// Execução real (exemplo): mês 13 já fechou; 14 e 15 ainda não.
+// Valores fictícios para demonstrar a aderência ao plano.
+export const EXECUCAO: ExecucaoMes[] = [
+  { mes: 13, produzidoReal: 1230, vendidoReal: 1180 },
+  { mes: 14, produzidoReal: 0, vendidoReal: 0 },
+  { mes: 15, produzidoReal: 0, vendidoReal: 0 },
+];
 
 // Cenários de demanda para a calibração do ciclo (Tabela 8).
 export const CENARIOS = [
