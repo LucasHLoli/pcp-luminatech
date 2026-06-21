@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Dashboard", icon: "▤" },
+  { href: "/", label: "Início", icon: "▤" },
+  { href: "/como-usar", label: "Como usar", icon: "📖" },
   { href: "/cadastro", label: "Cadastro", icon: "▦" },
   { href: "/previsao", label: "Previsão", icon: "📈" },
   { href: "/plano-mestre", label: "Plano Mestre", icon: "🗓" },

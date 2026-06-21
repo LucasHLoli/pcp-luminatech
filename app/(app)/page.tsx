@@ -1,139 +1,192 @@
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
 import Stat from "@/components/Stat";
 import { lerConfig } from "@/lib/db/repo";
 import { rodarEngine } from "@/lib/pcp/engine";
+import { gerarAlertas, type Severidade } from "@/lib/pcp/alertas";
 import { fmtDec1, fmtInt, fmtPct } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export default async function Dashboard() {
+const PASSOS = [
+  {
+    n: 1,
+    titulo: "Cadastro",
+    href: "/cadastro",
+    o_que: "Registre componentes, custos, lead times e estoque atual.",
+    dica: "É a base: tudo depois é calculado a partir daqui.",
+  },
+  {
+    n: 2,
+    titulo: "Previsão de demanda",
+    href: "/previsao",
+    o_que: "Lance as vendas históricas; o sistema testa 4 métodos e escolhe o melhor.",
+    dica: "Recalibre todo mês com as vendas reais (menor MAPE = melhor).",
+  },
+  {
+    n: 3,
+    titulo: "Plano Mestre",
+    href: "/plano-mestre",
+    o_que: "Defina demanda e estoque desejado; veja quanto produzir por mês.",
+    dica: "Confira a utilização da capacidade antes de fechar o plano.",
+  },
+  {
+    n: 4,
+    titulo: "MRP",
+    href: "/mrp",
+    o_que: "Explode a lista de materiais e mostra quando liberar cada pedido.",
+    dica: "Atenção aos itens de lead time 2 meses (driver e placa LED).",
+  },
+  {
+    n: 5,
+    titulo: "Estoques",
+    href: "/estoques",
+    o_que: "Calcula lote econômico, estoque de segurança, ponto de pedido e curva ABC.",
+    dica: "Foque o controle nos itens classe A (maior valor e risco).",
+  },
+  {
+    n: 6,
+    titulo: "Balanceamento",
+    href: "/balanceamento",
+    o_que: "Distribui as tarefas em estações e mostra eficiência e gargalo.",
+    dica: "Arraste o tempo de ciclo para simular cenários de demanda.",
+  },
+];
+
+const sevEstilo: Record<Severidade, { pill: string; rotulo: string }> = {
+  alta: { pill: "pill-a", rotulo: "Alta" },
+  media: { pill: "pill-b", rotulo: "Média" },
+  baixa: { pill: "pill-c", rotulo: "Baixa" },
+};
+
+export default async function Inicio() {
   const cfg = await lerConfig();
   const r = rodarEngine(cfg);
+  const { alertas, porSeveridade } = gerarAlertas(cfg, r);
 
   const bal = r.balanceamento.proposta5;
-  const metodoEscolhido = r.previsao.metodos.find((m) => m.escolhido)!;
-  const itensCriticos = r.mrp.filter((m) => m.critico);
-  const classeA = r.estoques.itens.filter((i) => i.classe === "A");
+  const metodo = r.previsao.metodos.find((m) => m.escolhido)!;
   const ultimoMes = r.verificacao[r.verificacao.length - 1];
 
   return (
     <div>
-      <PageHeader
-        secao="Visão geral"
-        titulo="Painel de PCP — LuminaTech LUX-01"
-        descricao="Indicadores consolidados do sistema. Toda alteração de input nos módulos recalcula esta tela em cascata."
-      />
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat
-          rotulo="Previsão (mês 15)"
-          valor={fmtInt(metodoEscolhido.prev15)}
-          sub={`Método: ${metodoEscolhido.rotulo} · MAPE ${fmtPct(
-            metodoEscolhido.mape
-          )}`}
-          cor="brand"
-        />
-        <Stat
-          rotulo="Eficiência da linha"
-          valor={fmtPct(bal.eficiencia)}
-          sub={`${bal.numEstacoes} estações · gargalo ${fmtDec1(
-            bal.gargalo
-          )} min`}
-          cor="emerald"
-        />
-        <Stat
-          rotulo="Capacidade"
-          valor={`${fmtInt(bal.capacidade)} un./mês`}
-          sub={`Utilização no mês 15: ${fmtPct(ultimoMes.utilizacao)}`}
-        />
-        <Stat
-          rotulo="Itens críticos (LT ≥ 2)"
-          valor={String(itensCriticos.length)}
-          sub={itensCriticos.map((i) => i.nome).join(", ")}
-          cor="rose"
-        />
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="card">
-          <div className="card-title">Plano Mestre × Capacidade</div>
-          <table className="table mt-3">
-            <thead>
-              <tr>
-                <th>Mês</th>
-                <th className="text-right">Produção</th>
-                <th className="text-right">Capac.</th>
-                <th className="text-right">Utilização</th>
-                <th className="text-right">Viável</th>
-              </tr>
-            </thead>
-            <tbody>
-              {r.verificacao.map((v) => (
-                <tr key={v.mes}>
-                  <td>Mês {v.mes}</td>
-                  <td className="text-right">{fmtInt(v.producaoPlanejada)}</td>
-                  <td className="text-right">{fmtInt(v.capacidade)}</td>
-                  <td className="text-right">{fmtPct(v.utilizacao)}</td>
-                  <td className="text-right">
-                    {v.viavel ? "✅" : "⚠️"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Boas-vindas */}
+      <div className="rounded-2xl bg-gradient-to-br from-brand to-brand-dark p-7 text-white">
+        <div className="text-xs font-semibold uppercase tracking-wide text-white/70">
+          Sistema de PCP — LuminaTech LUX-01
         </div>
-
-        <div className="card">
-          <div className="card-title">Itens classe A (foco do controle)</div>
-          <table className="table mt-3">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th className="text-right">Participação</th>
-                <th className="text-right">Ponto de pedido</th>
-                <th className="text-right">Est. segurança</th>
-              </tr>
-            </thead>
-            <tbody>
-              {classeA.map((i) => (
-                <tr key={i.codigo}>
-                  <td>
-                    <span className="badge pill-a mr-2">A</span>
-                    {i.nome}
-                  </td>
-                  <td className="text-right">{fmtPct(i.participacao)}</td>
-                  <td className="text-right">{fmtInt(i.pontoPedido)}</td>
-                  <td className="text-right">{fmtInt(i.estoqueSeguranca)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="mt-3 text-xs text-slate-500">
-            Driver e placa LED concentram{" "}
-            {fmtPct(classeA.reduce((a, i) => a + i.participacao, 0))} do valor
-            anual — gargalo da linha e itens da FMEA.
-          </p>
+        <h1 className="mt-1 text-2xl font-bold">
+          Bem-vindo ao painel de gestão da produção
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-white/80">
+          Esta plataforma integra previsão, plano mestre, materiais, estoques e
+          balanceamento numa única tela. Edite qualquer dado e tudo recalcula em
+          cascata. Comece pelas <strong>ações recomendadas</strong> abaixo ou
+          siga o passo a passo.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/como-usar" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-brand hover:bg-white/90">
+            📖 Como usar (guia completo)
+          </Link>
+          <Link href="/cadastro" className="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10">
+            Começar pelo Cadastro →
+          </Link>
         </div>
       </div>
 
-      <div className="mt-6 card">
-        <div className="card-title">Atalhos dos módulos</div>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {[
-            ["/cadastro", "Cadastro"],
-            ["/previsao", "Previsão"],
-            ["/plano-mestre", "Plano Mestre"],
-            ["/mrp", "MRP"],
-            ["/estoques", "Estoques"],
-            ["/balanceamento", "Balanceamento"],
-          ].map(([href, label]) => (
-            <Link key={href} href={href} className="btn-ghost justify-center">
-              {label}
+      {/* Ações recomendadas — o coração da gestão */}
+      <section className="mt-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-800">
+            ⚡ Ações recomendadas hoje
+          </h2>
+          <div className="flex gap-2 text-xs">
+            <span className="badge pill-a">{porSeveridade.alta} alta</span>
+            <span className="badge pill-b">{porSeveridade.media} média</span>
+            <span className="badge pill-c">{porSeveridade.baixa} baixa</span>
+          </div>
+        </div>
+
+        {alertas.length === 0 ? (
+          <div className="card text-sm text-slate-500">
+            Nenhuma ação pendente. 🎉
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {alertas.map((a) => (
+              <Link
+                key={a.id}
+                href={a.modulo}
+                className="card flex items-start gap-4 transition hover:border-brand"
+              >
+                <span className={`badge ${sevEstilo[a.severidade].pill} mt-0.5 shrink-0`}>
+                  {sevEstilo[a.severidade].rotulo}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-slate-800">{a.titulo}</div>
+                  <div className="text-sm text-slate-500">{a.detalhe}</div>
+                  <div className="mt-1 text-sm font-medium text-brand">
+                    → {a.acao}
+                  </div>
+                </div>
+                <span className="shrink-0 self-center text-slate-300">›</span>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Saúde do sistema */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-lg font-bold text-slate-800">
+          📊 Saúde do sistema
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat
+            rotulo="Previsão (mês 15)"
+            valor={fmtInt(metodo.prev15)}
+            sub={`${metodo.rotulo} · MAPE ${fmtPct(metodo.mape)}`}
+            cor="brand"
+          />
+          <Stat
+            rotulo="Eficiência da linha"
+            valor={fmtPct(bal.eficiencia)}
+            sub={`${bal.numEstacoes} estações · gargalo ${fmtDec1(bal.gargalo)} min`}
+            cor="emerald"
+          />
+          <Stat
+            rotulo="Capacidade"
+            valor={`${fmtInt(bal.capacidade)}/mês`}
+            sub={`Utilização mês 15: ${fmtPct(ultimoMes.utilizacao)}`}
+          />
+          <Stat
+            rotulo="Itens críticos (LT ≥ 2)"
+            valor={String(r.mrp.filter((m) => m.critico).length)}
+            sub={r.mrp.filter((m) => m.critico).map((i) => i.nome).join(", ")}
+            cor="rose"
+          />
+        </div>
+      </section>
+
+      {/* Como usar em 6 passos */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-lg font-bold text-slate-800">
+          🚀 Como usar em 6 passos
+        </h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {PASSOS.map((p) => (
+            <Link key={p.n} href={p.href} className="card transition hover:border-brand">
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                  {p.n}
+                </span>
+                <span className="font-semibold text-slate-800">{p.titulo}</span>
+              </div>
+              <p className="mt-2 text-sm text-slate-600">{p.o_que}</p>
+              <p className="mt-2 text-xs text-slate-400">💡 {p.dica}</p>
             </Link>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
