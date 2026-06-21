@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-sm;
+  }
+  .card-title {
+    @apply text-sm font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-dark disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/20;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-slate-600;
+  }
+  .table {
+    @apply w-full border-collapse text-sm;
+  }
+  .table th {
+    @apply border-b border-slate-200 bg-slate-50 px-3 py-2 text-left font-semibold text-slate-600;
+  }
+  .table td {
+    @apply border-b border-slate-100 px-3 py-2;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+  }
+  .pill-a { @apply bg-rose-100 text-rose-700; }
+  .pill-b { @apply bg-amber-100 text-amber-700; }
+  .pill-c { @apply bg-emerald-100 text-emerald-700; }
+}
